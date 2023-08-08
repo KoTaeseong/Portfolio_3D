@@ -25,6 +25,7 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //우클릭을 할경우 해당 위치로 이동
         if (Input.GetMouseButton(1))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -39,13 +40,18 @@ public class PlayerMove : MonoBehaviour
                 else
                 {
                     target = hit.collider.transform.position;
+                    target.y = transform.position.y;
                     Debug.Log("Click object");
                 }
 
             }
         }
 
+        //목적지와 현재지점을 이용해 이동방향 결정
         velocity = (target - this.transform.position).normalized;
+
+        //이동방향으로 부드러운 회전을 하기위해 선형보간 사용
+        transform.forward= Vector3.Lerp(this.transform.forward,velocity,10*Time.deltaTime);
     }
 
     private void FixedUpdate()
