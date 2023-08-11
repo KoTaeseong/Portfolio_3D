@@ -836,6 +836,7 @@ MonoBehaviour:
   obejctLayer:
     serializedVersion: 2
     m_Bits: 1024
+  state: 0
 --- !u!54 &1718917665
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1213,6 +1214,7 @@ GameObject:
   - component: {fileID: 692475976784763332}
   - component: {fileID: 692475976784763335}
   - component: {fileID: 692475976784763334}
+  - component: {fileID: 692475976784763336}
   m_Layer: 0
   m_Name: Vampire A Lusth
   m_TagString: Untagged
@@ -1232,7 +1234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fae9f6b7a01d604c8167f8b26edcc74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1
+  moveSpeed: 5
   target: {x: 0, y: 0, z: 0}
   velocity: {x: 0, y: 0, z: 0}
   groundLayer:
@@ -1241,6 +1243,7 @@ MonoBehaviour:
   obejctLayer:
     serializedVersion: 2
     m_Bits: 1024
+  state: 0
 --- !u!95 &692475976784763333
 Animator:
   serializedVersion: 4
@@ -1251,7 +1254,7 @@ Animator:
   m_GameObject: {fileID: 692475976784763331}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 8891db2414a30734fb463e6a9739d60f, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 90e51c1da63f5a8458e0ed5528d60183, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1291,6 +1294,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &692475976784763336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 692475976784763331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 931e2e99d6852594e839618764c92f27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AttackRange: 3
 --- !u!1 &745418813974952600
 GameObject:
   m_ObjectHideFlags: 0
