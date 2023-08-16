@@ -29,6 +29,29 @@ public class MouseMgr : MonoBehaviour
         }
     }
 
+    public GameObject Target
+    {
+        get
+        {
+            Ray ray = Camera.main.ScreenPointToRay(screenMousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                _directionToMouse = (hit.point - player.transform.position).normalized;
+                _distanceOfMouse = Vector3.Distance(hit.point, player.transform.position);
+                target = hit.collider.gameObject;
+            }
+            else
+            {
+                _directionToMouse = default(Vector3);
+                _distanceOfMouse = -1;
+                target = null;
+            }
+            return target;
+        }
+    }
+
+    private GameObject target;
     private Vector3 _directionToMouse;
     private float _distanceOfMouse;
 
@@ -48,20 +71,6 @@ public class MouseMgr : MonoBehaviour
     void Update()
     {
         screenMousePosition = Input.mousePosition;
-
-
-        Ray ray = Camera.main.ScreenPointToRay(screenMousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            _directionToMouse = (hit.point - player.transform.position).normalized;
-            _distanceOfMouse = Vector3.Distance(hit.point,player.transform.position);
-        }
-        else
-        {
-            _directionToMouse = default(Vector3);
-            _distanceOfMouse = -1;
-        }
     }
 
     private void LateUpdate()

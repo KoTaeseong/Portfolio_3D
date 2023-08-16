@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Transactions;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 
@@ -24,12 +25,15 @@ public class PlayerMove : MonoBehaviour
 
     [SerializeField] StateType state = StateType.Idle;
 
+    private MouseMgr mouseMgr;
+
     private Animator animator;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        mouseMgr = GetComponent<MouseMgr>();
     }
 
     // Start is called before the first frame update
