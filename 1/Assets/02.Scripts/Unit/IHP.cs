@@ -6,8 +6,8 @@ using UnityEngine;
 public interface IHP
 {
     public float hp { get; set; }
-    public float hpMin { get; set; }
-    public float hpMax { get; set; }
+    public float hpMin { get;}
+    public float hpMax { get;}
 
     event Action<float> OnHpChanged;
     event Action<float> OnHpDecreased;
