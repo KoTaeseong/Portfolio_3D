@@ -1,80 +1,57 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class MouseMgr : MonoBehaviour
 {
-    public enum ClickObjectType
-    {
-        Ground,
-        Object,
-        Char,
-        Enemy,
-        UI
-    }
-
-    public Vector3 DirectionToMouse
+    public static MouseMgr instance
     {
         get
         {
-            return _directionToMouse;
+            if(_instacne != null)
+                return _instacne;
+            _instacne = new MouseMgr();
+            return _instacne;
         }
     }
+    public static MouseMgr _instacne;
 
-    public float DistanceOfMouse
+
+    [SerializeField] public GameObject mouseImage;
+
+    private Vector3 mousePosition;
+
+
+    public Target MouseClick()
     {
-        get
+        Debug.Log("MouseClick");
+
+        Target target = new Target();
+
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
         {
-            return _distanceOfMouse;
+            Debug.Log("hit");
+
+            target.point = hit.point;
+            target.gameObject = hit.collider.gameObject;
+            target.targetType = 0;
         }
+
+        return target;
     }
 
-    public GameObject Target
+    private void Update()
     {
-        get
-        {
-            Ray ray = Camera.main.ScreenPointToRay(screenMousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                _directionToMouse = (hit.point - player.transform.position).normalized;
-                _distanceOfMouse = Vector3.Distance(hit.point, player.transform.position);
-                target = hit.collider.gameObject;
-            }
-            else
-            {
-                _directionToMouse = default(Vector3);
-                _distanceOfMouse = -1;
-                target = null;
-            }
-            return target;
-        }
-    }
-
-    private GameObject target;
-    private Vector3 _directionToMouse;
-    private float _distanceOfMouse;
-
-    private GameObject player;
-
-    private Vector3 screenMousePosition;
-    [SerializeField]private GameObject mousetIcon;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        screenMousePosition = Input.mousePosition;
+        mousePosition = Input.mousePosition;
     }
 
     private void LateUpdate()
     {
-        mousetIcon.transform.position = screenMousePosition;
+        mouseImage.transform.position = mousePosition;
     }
 }

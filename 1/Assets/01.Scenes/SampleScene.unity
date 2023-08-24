@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b909db2ee0bd7049878a2015cc7d8d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mousetIcon: {fileID: 1710838508}
+  mouseImage: {fileID: 1710838508}
 --- !u!4 &199858483
 Transform:
   m_ObjectHideFlags: 0
@@ -1591,11 +1591,11 @@ GameObject:
   m_Component:
   - component: {fileID: 204908938205791097}
   - component: {fileID: 692475976784763333}
-  - component: {fileID: 692475976784763332}
   - component: {fileID: 692475976784763335}
   - component: {fileID: 692475976784763334}
-  - component: {fileID: 692475976784763336}
   - component: {fileID: 692475976784763337}
+  - component: {fileID: 692475976784763339}
+  - component: {fileID: 692475976784763338}
   m_Layer: 0
   m_Name: Vampire A Lusth
   m_TagString: Untagged
@@ -1603,28 +1603,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &692475976784763332
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 692475976784763331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fae9f6b7a01d604c8167f8b26edcc74, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 5
-  target: {x: 0, y: 0, z: 0}
-  velocity: {x: 0, y: 0, z: 0}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  obejctLayer:
-    serializedVersion: 2
-    m_Bits: 1024
-  state: 0
 --- !u!95 &692475976784763333
 Animator:
   serializedVersion: 4
@@ -1675,19 +1653,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &692475976784763336
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 692475976784763331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 931e2e99d6852594e839618764c92f27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AttackRange: 3
 --- !u!114 &692475976784763337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1700,6 +1665,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 024de618d321e8e40b52f32a2f129509, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _moveSpeed: 10
+  _atk: 10
+  _hpMax: 100
+--- !u!114 &692475976784763338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 692475976784763331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b2c5d87b7ef4c45963cab656b9f7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &692475976784763339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 692475976784763331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22b0a20238d1823488ebdd7ad5806345, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
+  _direction: {x: 0, y: 0, z: 0}
+  _groundCastMaxDistance: 0
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &745418813974952600
 GameObject:
   m_ObjectHideFlags: 0
