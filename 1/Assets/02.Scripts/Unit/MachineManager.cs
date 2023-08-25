@@ -14,6 +14,7 @@ public enum StateType
 
 public enum TargetType
 {
+    None,
     Ground,
     Object,
 }
@@ -40,15 +41,30 @@ public class MachineManager : MonoBehaviour
         }
     }
 
+    public float distanceTarget
+    {
+        get => _distanceTarget;
+        set
+        {
+            if (value <= 0.1f)
+            {
+                _distanceTarget = 0f;
+                _isMoveable= false;
+            }
+            _distanceTarget = value;
+        }
+    }
+
     private Animator _animator;
     private Rigidbody _rigidbody;
     private Player _player;
 
     private Target _target;
     [SerializeField] private Vector3 _direction;
+    [SerializeField] private float _distanceTarget;
 
-    private bool _isMoveable;
-    private float _speed;
+    [SerializeField] private bool _isMoveable = true;
+    //private float _speed;
 
 
     [SerializeField] private float _groundCastMaxDistance;
@@ -65,11 +81,13 @@ public class MachineManager : MonoBehaviour
     private void Update()
     {
         if (target.targetType == TargetType.Ground)
-            _direction = new Vector3(target.point.x, 0f, target.point.z);
-        else
-            _direction = new Vector3(target.gameObject.transform.position.x, 0f, gameObject.transform.position.z);
+        {
+            Vector3 targetPoint = new Vector3(target.point.x, 0f, target.point.z);
+            _direction = (targetPoint - this.transform.position).normalized;
+            distanceTarget = Vector3.Distance(target.point, this.transform.position);
 
-        //이동방향으로 부드러운 회전을 하기위해 선형보간 사용
+        }
+
         transform.forward = Vector3.Lerp(this.transform.forward, _direction, 20 * Time.deltaTime);
     }
 
@@ -77,7 +95,8 @@ public class MachineManager : MonoBehaviour
     {
         if (_isMoveable == false)
             return;
-
-        _rigidbody.transform.position = _direction * _speed * Time.deltaTime;
+        if(distanceTarget > 0.1f)
+            _rigidbody.velocity = _direction * _player.Speed;
+        Debug.Log(_player.Speed);
     }
 }

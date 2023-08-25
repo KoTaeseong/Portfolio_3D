@@ -1665,7 +1665,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 024de618d321e8e40b52f32a2f129509, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 10
+  _moveSpeed: 3
   _atk: 10
   _hpMax: 100
 --- !u!114 &692475976784763338
@@ -1680,6 +1680,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26b2c5d87b7ef4c45963cab656b9f7d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mouseMgr: {fileID: 199858482}
 --- !u!114 &692475976784763339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1694,6 +1695,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   state: 0
   _direction: {x: 0, y: 0, z: 0}
+  _distanceTarget: 0
+  _isMoveable: 1
   _groundCastMaxDistance: 0
   _groundMask:
     serializedVersion: 2

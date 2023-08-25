@@ -7,19 +7,6 @@ using static UnityEngine.GraphicsBuffer;
 
 public class MouseMgr : MonoBehaviour
 {
-    public static MouseMgr instance
-    {
-        get
-        {
-            if(_instacne != null)
-                return _instacne;
-            _instacne = new MouseMgr();
-            return _instacne;
-        }
-    }
-    public static MouseMgr _instacne;
-
-
     [SerializeField] public GameObject mouseImage;
 
     private Vector3 mousePosition;
@@ -27,7 +14,6 @@ public class MouseMgr : MonoBehaviour
 
     public Target MouseClick()
     {
-        Debug.Log("MouseClick");
 
         Target target = new Target();
 
@@ -35,11 +21,10 @@ public class MouseMgr : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-            Debug.Log("hit");
 
             target.point = hit.point;
             target.gameObject = hit.collider.gameObject;
-            target.targetType = 0;
+            target.targetType = (TargetType)1;
         }
 
         return target;
