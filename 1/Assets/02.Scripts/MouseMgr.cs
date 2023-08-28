@@ -24,7 +24,7 @@ public class MouseMgr : MonoBehaviour
 
             target.point = hit.point;
             target.gameObject = hit.collider.gameObject;
-            target.targetType = (TargetType)1;
+            target.targetType = (TargetType)hit.collider.gameObject.layer;
         }
 
         return target;

@@ -25,6 +25,19 @@ public class PlayerController : MonoBehaviour
         if(Input.GetMouseButton(1))
         {
             _machineManager.target = _mouseMgr.MouseClick();
+            _machineManager.ChangeState(StateType.Move);
+        }
+
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            
         }
     }
+
+
+    private void FootL() { }
+    private void FootR() { }
+    private void Land() { }
+
+    private void Hit() { }
 }

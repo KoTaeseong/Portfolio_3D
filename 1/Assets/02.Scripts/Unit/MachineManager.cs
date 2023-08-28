@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,16 +16,25 @@ public enum StateType
 public enum TargetType
 {
     None,
-    Ground,
-    Object,
+    Ground = 8,
+    Object = 10,
+    Enemy = 13,
 }
 
-public struct Target
+public enum ActionState
+{
+    WaitUntilAction,
+    DoAction,
+}
+
+[Serializable]
+public class Target
 {
     public TargetType targetType;
     public Vector3 point;
     public GameObject gameObject;
 }
+
 
 public class MachineManager : MonoBehaviour
 {
@@ -46,12 +56,14 @@ public class MachineManager : MonoBehaviour
         get => _distanceTarget;
         set
         {
-            if (value <= 0.1f)
+            _distanceTarget = value;
+
+            if (value <= 0.05f)
             {
                 _distanceTarget = 0f;
-                _isMoveable= false;
+                //_isMoveable= false;
+                target = null;
             }
-            _distanceTarget = value;
         }
     }
 
@@ -59,7 +71,8 @@ public class MachineManager : MonoBehaviour
     private Rigidbody _rigidbody;
     private Player _player;
 
-    private Target _target;
+    [SerializeField] private Target _target = null;
+
     [SerializeField] private Vector3 _direction;
     [SerializeField] private float _distanceTarget;
 
@@ -71,21 +84,40 @@ public class MachineManager : MonoBehaviour
     [SerializeField] private LayerMask _groundMask;
 
 
+    public bool ChangeState(StateType newState)
+    {
+        if (state == newState)
+            return false;
+
+        _animator.Play(newState.ToString());
+        state = newState;
+        return true;
+    }
+
+
     private void Awake()
     {
         _animator= GetComponent<Animator>();
         _rigidbody= GetComponent<Rigidbody>();
         _player= GetComponent<Player>();
+
+        BehaviourBase[] behaviours = _animator.GetBehaviours<BehaviourBase>();
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            behaviours[i].Initialize(this);
+        }
     }
 
     private void Update()
     {
-        if (target.targetType == TargetType.Ground)
+        if (target != null)
         {
-            Vector3 targetPoint = new Vector3(target.point.x, 0f, target.point.z);
-            _direction = (targetPoint - this.transform.position).normalized;
-            distanceTarget = Vector3.Distance(target.point, this.transform.position);
-
+            if(target.targetType == TargetType.Ground)
+            {
+                Vector3 targetPoint = new Vector3(target.point.x, 0f, target.point.z);
+                _direction = (targetPoint - this.transform.position).normalized;
+                distanceTarget = Vector3.Distance(target.point, this.transform.position);
+            }
         }
 
         transform.forward = Vector3.Lerp(this.transform.forward, _direction, 20 * Time.deltaTime);
@@ -93,10 +125,9 @@ public class MachineManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_isMoveable == false)
+        if (state != StateType.Move)
             return;
-        if(distanceTarget > 0.1f)
-            _rigidbody.velocity = _direction * _player.Speed;
+        _rigidbody.velocity = _direction * _player.Speed;
         Debug.Log(_player.Speed);
     }
 }
