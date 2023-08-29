@@ -10,6 +10,7 @@ public class MouseMgr : MonoBehaviour
     [SerializeField] public GameObject mouseImage;
 
     private Vector3 mousePosition;
+    [SerializeField] private MachineManager manager;
 
 
     public Target MouseClick()
@@ -38,5 +39,15 @@ public class MouseMgr : MonoBehaviour
     private void LateUpdate()
     {
         mouseImage.transform.position = mousePosition;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (manager.target != default)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(manager.target.point, radius: 0.5f);
+            Gizmos.DrawLine(manager.transform.position, manager.target.point);
+        }
     }
 }

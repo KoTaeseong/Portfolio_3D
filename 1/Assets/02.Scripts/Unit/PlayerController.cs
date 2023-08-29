@@ -30,11 +30,16 @@ public class PlayerController : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.A))
         {
-            
+            _machineManager.ChangeActionState(ActionState.WaitUntilAction);
         }
     }
 
 
+
+
+
+
+    //===========================
     private void FootL() { }
     private void FootR() { }
     private void Land() { }

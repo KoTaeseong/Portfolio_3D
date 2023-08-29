@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using UnityEngine.AI;
+
 public enum StateType
 {
     Idle,
@@ -23,6 +25,7 @@ public enum TargetType
 
 public enum ActionState
 {
+    None,
     WaitUntilAction,
     DoAction,
 }
@@ -41,6 +44,7 @@ public class MachineManager : MonoBehaviour
     public bool isGrounded => Physics.Raycast(transform.position + Vector3.up, Vector3.down, out RaycastHit hit, _groundCastMaxDistance + 1.0f, _groundMask);
 
     public StateType state;
+    public ActionState actionState;
 
     public Target target
     {
@@ -71,6 +75,8 @@ public class MachineManager : MonoBehaviour
     private Rigidbody _rigidbody;
     private Player _player;
 
+    private NavMeshAgent _navMeshAgent;
+
     [SerializeField] private Target _target = null;
 
     [SerializeField] private Vector3 _direction;
@@ -94,12 +100,22 @@ public class MachineManager : MonoBehaviour
         return true;
     }
 
+    public bool ChangeActionState(ActionState newState)
+    {
+        if (actionState == newState)
+            return false;
+
+        actionState = newState;
+        return true;
+    }
+
 
     private void Awake()
     {
         _animator= GetComponent<Animator>();
         _rigidbody= GetComponent<Rigidbody>();
         _player= GetComponent<Player>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
 
         BehaviourBase[] behaviours = _animator.GetBehaviours<BehaviourBase>();
         for (int i = 0; i < behaviours.Length; i++)
@@ -117,17 +133,32 @@ public class MachineManager : MonoBehaviour
                 Vector3 targetPoint = new Vector3(target.point.x, 0f, target.point.z);
                 _direction = (targetPoint - this.transform.position).normalized;
                 distanceTarget = Vector3.Distance(target.point, this.transform.position);
+                
             }
         }
 
-        transform.forward = Vector3.Lerp(this.transform.forward, _direction, 20 * Time.deltaTime);
+        //transform.forward = Vector3.Lerp(this.transform.forward, _direction, 20 * Time.deltaTime);
     }
 
     private void FixedUpdate()
     {
         if (state != StateType.Move)
             return;
-        _rigidbody.velocity = _direction * _player.Speed;
+        //_rigidbody.velocity = _direction * _player.Speed;
+        _navMeshAgent.SetDestination(target.point);
         Debug.Log(_player.Speed);
+    }
+
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        if(actionState == ActionState.WaitUntilAction)
+        {
+            Gizmos.DrawWireSphere(this.transform.position, _player.AttackRange);
+        }
+
+        
     }
 }

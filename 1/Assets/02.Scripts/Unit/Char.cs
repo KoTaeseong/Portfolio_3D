@@ -44,11 +44,14 @@ public class Char : MonoBehaviour,IHP
     public float hpMin => _hpMin;
     public float hpMax => _hpMax;
     public float Speed => _moveSpeed;
+    public float AttackRange => _attackRange;
 
     [Header("Status")]
     [SerializeField] float _moveSpeed = 10f;
     [SerializeField] float _atk = 10f;
     [SerializeField] float _hpMax = 100f;
+    [SerializeField] float _attackRange = 2f;
+
     float _hpMin;
     float _hp;
 
