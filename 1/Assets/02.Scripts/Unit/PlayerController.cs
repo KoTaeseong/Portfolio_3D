@@ -28,9 +28,25 @@ public class PlayerController : MonoBehaviour
             _machineManager.ChangeState(StateType.Move);
         }
 
-        if(Input.GetKeyDown(KeyCode.A))
+        if(Input.GetKeyUp(KeyCode.A))
         {
-            _machineManager.ChangeActionState(ActionState.WaitUntilAction);
+            _machineManager.ChangeActionState(AttackState.WaitUntilTargeting);
+        }
+
+        if(_machineManager.actionState == AttackState.WaitUntilTargeting)
+        {
+            if (Input.anyKeyDown)
+            {
+                if(Input.GetMouseButton(0))
+                {
+                    Debug.Log("DoAttack");
+                    _machineManager.ChangeActionState(AttackState.TargetTracking);
+                }
+                else
+                {
+                    _machineManager.ChangeActionState(AttackState.None);
+                }
+            }
         }
     }
 

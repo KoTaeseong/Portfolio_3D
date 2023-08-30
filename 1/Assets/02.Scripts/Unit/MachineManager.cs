@@ -23,11 +23,12 @@ public enum TargetType
     Enemy = 13,
 }
 
-public enum ActionState
+public enum AttackState
 {
     None,
-    WaitUntilAction,
-    DoAction,
+    WaitUntilTargeting,
+    TargetTracking,
+    DoAttack,
 }
 
 [Serializable]
@@ -44,7 +45,7 @@ public class MachineManager : MonoBehaviour
     public bool isGrounded => Physics.Raycast(transform.position + Vector3.up, Vector3.down, out RaycastHit hit, _groundCastMaxDistance + 1.0f, _groundMask);
 
     public StateType state;
-    public ActionState actionState;
+    public AttackState actionState;
 
     public Target target
     {
@@ -100,13 +101,33 @@ public class MachineManager : MonoBehaviour
         return true;
     }
 
-    public bool ChangeActionState(ActionState newState)
+    public bool ChangeActionState(AttackState newState)
     {
         if (actionState == newState)
             return false;
 
         actionState = newState;
         return true;
+    }
+
+
+    Sequence mRootNodeAttackBasic = null;
+
+    void BuildBTsAttackBasic()
+    {
+
+    }
+
+    NodeStates DoFollowTarget()
+    {
+        if(distanceTarget <= _player.AttackRange)
+        {
+            return NodeStates.SUCCESS;
+        }
+
+        
+
+        return NodeStates.FAILURE;
     }
 
 
@@ -137,6 +158,8 @@ public class MachineManager : MonoBehaviour
             }
         }
 
+
+
         //transform.forward = Vector3.Lerp(this.transform.forward, _direction, 20 * Time.deltaTime);
     }
 
@@ -146,7 +169,6 @@ public class MachineManager : MonoBehaviour
             return;
         //_rigidbody.velocity = _direction * _player.Speed;
         _navMeshAgent.SetDestination(target.point);
-        Debug.Log(_player.Speed);
     }
 
 
@@ -154,7 +176,7 @@ public class MachineManager : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        if(actionState == ActionState.WaitUntilAction)
+        if(actionState == AttackState.TargetTracking)
         {
             Gizmos.DrawWireSphere(this.transform.position, _player.AttackRange);
         }
