@@ -31,6 +31,13 @@ public enum AttackState
     DoAttack,
 }
 
+public enum ActionState
+{
+    None,
+    EnemyAttack,
+    GroundAttack,
+}
+
 [Serializable]
 public class Target
 {
@@ -45,7 +52,8 @@ public class MachineManager : MonoBehaviour
     public bool isGrounded => Physics.Raycast(transform.position + Vector3.up, Vector3.down, out RaycastHit hit, _groundCastMaxDistance + 1.0f, _groundMask);
 
     public StateType state;
-    public AttackState actionState;
+    public AttackState attackState;
+    public ActionState actionState;
 
     public Target target
     {
@@ -119,7 +127,16 @@ public class MachineManager : MonoBehaviour
         return true;
     }
 
-    public bool ChangeActionState(AttackState newState)
+    public bool ChangeAttackState(AttackState newState)
+    {
+        if (attackState == newState)
+            return false;
+
+        attackState = newState;
+        return true;
+    }
+
+    public bool ChangeActionState(ActionState newState)
     {
         if (actionState == newState)
             return false;
@@ -153,28 +170,10 @@ public class MachineManager : MonoBehaviour
      
      */
 
-    Sequence mRootNodeAttackBasic = null;
+    Sequence mRootNodeAttackEnemy = null;
+    Sequence mRootNodeAttackGround = null;
 
-    NodeStates DoFindTarget()
-    {
-        Collider[] enemyColliders = Physics.OverlapSphere(this.transform.position, _player.AttackRange, _enemyMask);
-        if (enemyColliders.Length == 1)
-        {
-            //target = enemyColliders[0].gameObject;
-
-            return NodeStates.SUCCESS;
-        }
-        else if(enemyColliders.Length > 1)
-        {
-
-
-            return NodeStates.SUCCESS;
-        }
-
-        return NodeStates.FAILURE;
-    }
-
-    void BuildBTsAttackBasic()
+    void BuildBTsAttackEnemy()
     {
         ActionNode tFollow = new ActionNode(DoFollowTarget);
         ActionNode tAttack = new ActionNode(DoAttack);
@@ -183,9 +182,60 @@ public class MachineManager : MonoBehaviour
         tLevel_2.Add(tFollow);
         tLevel_2.Add(tAttack);
 
-        mRootNodeAttackBasic = new Sequence(tLevel_2);
+        mRootNodeAttackEnemy = new Sequence(tLevel_2);
     }
 
+    void BuildBTsAttackGround()
+    {
+        //ActionNode tFollow = new ActionNode(DoFollowTarget);
+        ActionNode tFind = new ActionNode(DoFindTarget);
+        ActionNode tAttack = new ActionNode(DoAttack);
+
+        List<Node> tLevel_2 = new List<Node>();
+        tLevel_2.Add(tFind);
+        tLevel_2.Add(tAttack);
+
+        mRootNodeAttackEnemy = new Sequence(tLevel_2);
+    }
+
+    //범위 탐색 노드
+    NodeStates DoFindTarget()
+    {
+        //플레이어를 기준으로 사거리 반지름만큼 구 범위로 에너미레이어 오브젝트를 탐색
+        Collider[] enemyColliders = Physics.OverlapSphere(this.transform.position, _player.AttackRange, _enemyMask);
+        if (enemyColliders.Length == 1) //탐색결과가 1일 경우 
+        {
+            SetTarget(enemyColliders[0].gameObject);  //대상 오브젝트를 타겟으로 등록
+
+            return NodeStates.SUCCESS;
+        }
+        else if (enemyColliders.Length > 1)  //1이상일 경우
+        {
+            List<GameObject> list = new List<GameObject>(); //리스트를 만들고 등록후
+            for (int i = 0; i < enemyColliders.Length; i++)
+            {
+                list.Add(enemyColliders[i].gameObject);
+            }
+            list.Sort(CompareDistance); //플레이어와의 거리에 따라 정렬
+
+            SetTarget(list[0].gameObject); //가장 가까운 적을 타겟으로 등록
+
+            return NodeStates.SUCCESS;
+        }
+
+        return NodeStates.FAILURE;
+    }
+
+    //리스트 정렬기준 함수. 가장 가까운 순으로 정렬
+    int CompareDistance(GameObject objectA, GameObject objectB)
+    {
+        float distanceA = Vector3.Distance(this.transform.position, objectA.transform.position);
+        float distanceB = Vector3.Distance(this.transform.position, objectB.transform.position);
+
+        return distanceA < distanceB ? -1 : 1;
+    }
+
+    
     NodeStates DoFollowTarget()
     {
         if(distanceTarget <= _player.AttackRange)
@@ -200,9 +250,27 @@ public class MachineManager : MonoBehaviour
     NodeStates DoAttack()
     {
         //공격
+
         return NodeStates.SUCCESS;
     }
 
+
+    private void UpdateBehaviourTree(ActionState actionState)
+    {
+        switch (actionState)
+        {
+            case ActionState.None:
+                break;
+            case ActionState.EnemyAttack:
+                mRootNodeAttackEnemy.Evaluate();
+                break;
+            case ActionState.GroundAttack:
+                mRootNodeAttackGround.Evaluate();
+                break;
+            default:
+                break;
+        }
+    }
 
     private void Awake()
     {
@@ -231,6 +299,7 @@ public class MachineManager : MonoBehaviour
             }
         }
 
+        UpdateBehaviourTree(actionState);
 
 
         //transform.forward = Vector3.Lerp(this.transform.forward, _direction, 20 * Time.deltaTime);
@@ -249,7 +318,7 @@ public class MachineManager : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        if(actionState == AttackState.TargetTracking)
+        if(attackState == AttackState.TargetTracking)
         {
             Gizmos.DrawWireSphere(this.transform.position, _player.AttackRange);
         }

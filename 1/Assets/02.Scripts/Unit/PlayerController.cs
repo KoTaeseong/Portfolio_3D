@@ -30,21 +30,30 @@ public class PlayerController : MonoBehaviour
 
         if(Input.GetKeyUp(KeyCode.A))
         {
-            _machineManager.ChangeActionState(AttackState.WaitUntilTargeting);
+            _machineManager.ChangeAttackState(AttackState.WaitUntilTargeting);
         }
 
-        if(_machineManager.actionState == AttackState.WaitUntilTargeting)
+        if(_machineManager.attackState == AttackState.WaitUntilTargeting)
         {
             if (Input.anyKeyDown)
             {
                 if(Input.GetMouseButton(0))
                 {
-                    Debug.Log("DoAttack");
-                    _machineManager.ChangeActionState(AttackState.TargetTracking);
+                    _machineManager.target = _mouseMgr.MouseClick();
+
+                    if(_machineManager.target != null)
+                    {
+                        if (_machineManager.target.gameObject.layer == 13)
+                        {
+                            _machineManager.ChangeActionState(ActionState.EnemyAttack);
+                        }
+                    }
+                    
+                    //_machineManager.ChangeAttackState(AttackState.TargetTracking);
                 }
                 else
                 {
-                    _machineManager.ChangeActionState(AttackState.None);
+                    _machineManager.ChangeAttackState(AttackState.None);
                 }
             }
         }

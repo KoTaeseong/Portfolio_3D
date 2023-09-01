@@ -16,20 +16,25 @@ public class MouseMgr : MonoBehaviour
     public Target MouseClick()
     {
 
-        Target target = new Target();
+        Target target;
 
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-
+            target = new Target();
             target.point = hit.point;
             target.gameObject = hit.collider.gameObject;
             target.targetType = (TargetType)hit.collider.gameObject.layer;
         }
+        else
+        {
+            target = null;
+        }
 
         return target;
     }
+
 
     private void Update()
     {
