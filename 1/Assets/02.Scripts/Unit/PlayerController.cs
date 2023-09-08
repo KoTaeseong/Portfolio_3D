@@ -28,10 +28,11 @@ public class PlayerController : MonoBehaviour
             _machineManager.ChangeState(StateType.Move);
         }
 
-        if(Input.GetKeyUp(KeyCode.A))
+        if(Input.GetKeyUp(KeyCode.A) && _machineManager.attackState == AttackState.None)
         {
             _machineManager.ChangeAttackState(AttackState.WaitUntilTargeting);
         }
+
 
         if(_machineManager.attackState == AttackState.WaitUntilTargeting)
         {
@@ -48,8 +49,8 @@ public class PlayerController : MonoBehaviour
                             _machineManager.ChangeActionState(ActionState.EnemyAttack);
                         }
                     }
-                    
-                    //_machineManager.ChangeAttackState(AttackState.TargetTracking);
+
+                    _machineManager.ChangeAttackState(AttackState.TargetTracking);
                 }
                 else
                 {

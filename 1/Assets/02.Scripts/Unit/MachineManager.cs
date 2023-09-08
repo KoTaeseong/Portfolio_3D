@@ -173,7 +173,7 @@ public class MachineManager : MonoBehaviour
     Sequence mRootNodeAttackEnemy = null;
     Sequence mRootNodeAttackGround = null;
 
-    void BuildBTsAttackEnemy()
+    void BuildAIAttackTarget()
     {
         ActionNode tFollow = new ActionNode(DoFollowTarget);
         ActionNode tAttack = new ActionNode(DoAttack);
@@ -185,10 +185,11 @@ public class MachineManager : MonoBehaviour
         mRootNodeAttackEnemy = new Sequence(tLevel_2);
     }
 
-    void BuildBTsAttackGround()
+    void BuildAIAttackNonTarget()
     {
         //ActionNode tFollow = new ActionNode(DoFollowTarget);
         ActionNode tFind = new ActionNode(DoFindTarget);
+        ActionNode tFollow = new ActionNode(DoFollowTarget);
         ActionNode tAttack = new ActionNode(DoAttack);
 
         List<Node> tLevel_2 = new List<Node>();
@@ -255,7 +256,7 @@ public class MachineManager : MonoBehaviour
     }
 
 
-    private void UpdateBehaviourTree(ActionState actionState)
+    private void UpdateActionState(ActionState actionState)
     {
         switch (actionState)
         {
@@ -299,7 +300,7 @@ public class MachineManager : MonoBehaviour
             }
         }
 
-        UpdateBehaviourTree(actionState);
+        UpdateActionState(actionState);
 
 
         //transform.forward = Vector3.Lerp(this.transform.forward, _direction, 20 * Time.deltaTime);
@@ -308,7 +309,10 @@ public class MachineManager : MonoBehaviour
     private void FixedUpdate()
     {
         if (state != StateType.Move)
+        {
+            _navMeshAgent.destination = this.transform.position;
             return;
+        }
         //_rigidbody.velocity = _direction * _player.Speed;
         _navMeshAgent.SetDestination(target.point);
     }
@@ -318,7 +322,7 @@ public class MachineManager : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        if(attackState == AttackState.TargetTracking)
+        if(attackState == AttackState.WaitUntilTargeting)
         {
             Gizmos.DrawWireSphere(this.transform.position, _player.AttackRange);
         }
